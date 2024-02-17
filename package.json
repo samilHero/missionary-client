@@ -1,0 +1,17 @@
+{
+  "name": "samil-hero",
+  "version": "0.1.0",
+  "private": true,
+  "packageManager": "pnpm@8.13.1",
+  "scripts": {
+    "lint": "eslint 'packages/**/src/**/*.{js,ts,tsx}'",
+    "dev:client": "pnpm --filter client dev",
+    "build:client": "pnpm --filter client build"
+  },
+  "devDependencies": {
+    "typescript": "^5",
+    "@types/node": "^20",
+    "eslint": "^8",
+    "eslint-config-next": "14.1.0"
+  }
+}
