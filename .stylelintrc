@@ -1,0 +1,6 @@
+{
+  "extends": "./eslint/stylelint.js",
+  "parserOptions": {
+    "requireConfigFile": false
+  }
+}

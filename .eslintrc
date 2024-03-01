@@ -1,0 +1,6 @@
+{
+  "extends": "./eslint/index.js",
+  "parserOptions": {
+    "requireConfigFile": false
+  }
+}
