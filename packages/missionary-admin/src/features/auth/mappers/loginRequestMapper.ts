@@ -1,18 +1,16 @@
-
 class LoginRequsetMapper {
-    static mapsToPresentation(list) {
-        const lists = []
+  static mapsToPresentation(list) {
+    const lists = [];
 
-        return []
+    return [];
+  }
 
-    }
-
-    static mapToPresentation(response){
-        return {
-            id : '',
-            password:''
-        }
-    }
+  static mapToPresentation(response) {
+    return {
+      id: '',
+      password: '',
+    };
+  }
 }
 
-export default LoginRequsetMapper
+export default LoginRequsetMapper;

@@ -1,17 +1,22 @@
-import axios, { AxiosInstance } from 'axios'
+import axios from 'axios';
 
-const createApiInstance = (apiUrl: string, requestHeaders?: object): AxiosInstance => {
-    let headers = {
-        'Content-Type': 'application/json-patch+json',
-    }
+import type { AxiosInstance } from 'axios';
 
-    if (requestHeaders) {
-        headers = { ...headers, ...requestHeaders }
-    }
-    return axios.create({
-        baseURL: apiUrl,
-        headers,
-    })
-}
+const createApiInstance = (
+  apiUrl: string,
+  requestHeaders?: object,
+): AxiosInstance => {
+  let headers = {
+    'Content-Type': 'application/json-patch+json',
+  };
 
-export default createApiInstance(process.env.NEXT_PUBLIC_PROXY_API_URL)
+  if (requestHeaders) {
+    headers = { ...headers, ...requestHeaders };
+  }
+  return axios.create({
+    baseURL: apiUrl,
+    headers,
+  });
+};
+
+export default createApiInstance(process.env.NEXT_PUBLIC_PROXY_API_URL);

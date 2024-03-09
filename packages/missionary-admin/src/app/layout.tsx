@@ -1,5 +1,7 @@
 import type { Metadata } from 'next';
+
 import { EmotionProvider } from '../lib/EmotionProvider';
+
 export const metadata: Metadata = {
   title: '선교 상륙 작전',
 };
@@ -11,11 +13,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-    <EmotionProvider>
-      <body>
-        {children}
-      </body>
-    </EmotionProvider>
+      <EmotionProvider>
+        <body>{children}</body>
+      </EmotionProvider>
     </html>
   );
 }

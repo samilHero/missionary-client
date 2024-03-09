@@ -1,5 +1,6 @@
-import { useEffect } from "react";
-import { useLoginQuery } from "../queries/useLoginQuery";
+import { useEffect } from 'react';
+
+import { useLoginQuery } from '../queries/useLoginQuery';
 
 function LoginPanel() {
   const { refetch: refetchLogin, isSuccess: isSuccessLogin } = useLoginQuery();
@@ -8,11 +9,7 @@ function LoginPanel() {
     refetchLogin();
   }, []);
 
-  return (
-    <>
-      <div></div>
-    </>
-  );
+  return <div />;
 }
 
 export default LoginPanel;

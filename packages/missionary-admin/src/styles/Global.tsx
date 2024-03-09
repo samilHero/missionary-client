@@ -136,7 +136,8 @@ const styles = css`
     font-weight: inherit;
     font-style: normal;
   }
-
 `;
 
-export const GlobalStyle = () => <Global styles={styles} />;
+export function GlobalStyle() {
+  return <Global styles={styles} />;
+}

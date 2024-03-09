@@ -1,9 +1,9 @@
-import apiInstance from '../instance'
+import apiInstance from '../instance';
+
 export default function useUserApi() {
-    const login = async (params) => apiInstance.post('/')
+  const login = async (params) => apiInstance.post('/');
 
-
-    return {
-        login
-    }
+  return {
+    login,
+  };
 }

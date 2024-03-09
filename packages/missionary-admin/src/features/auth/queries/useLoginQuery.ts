@@ -1,11 +1,12 @@
-import useUserApi from "@apis/user"
-import { useQuery } from "@tanstack/react-query"
+import { useQuery } from '@tanstack/react-query';
+
+import useUserApi from '@apis/user';
 
 export const useLoginQuery = () => {
-    const {login} = useUserApi()
-    const queryFn = async (request) => {
-        const {data:response} = await login(request)
-    }
+  const { login } = useUserApi();
+  const queryFn = async (request) => {
+    const { data: response } = await login(request);
+  };
 
-    return useQuery([''], queryFn)
-}
+  return useQuery([''], queryFn);
+};
