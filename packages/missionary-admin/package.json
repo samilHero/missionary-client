@@ -9,5 +9,8 @@
     "build": "next build",
     "start": "next start",
     "preview": "next preview"
+  },
+  "dependencies": {
+    "@samilhero/design-system": "*"
   }
 }

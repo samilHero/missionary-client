@@ -111,9 +111,17 @@ importers:
 
   packages/design-system: {}
 
-  packages/missionary-admin: {}
+  packages/missionary-admin:
+    dependencies:
+      '@samilhero/design-system':
+        specifier: '*'
+        version: link:../design-system
 
-  packages/missionary-app: {}
+  packages/missionary-app:
+    dependencies:
+      '@samilhero/design-system':
+        specifier: '*'
+        version: link:../design-system
 
 packages:
 

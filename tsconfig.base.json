@@ -24,7 +24,7 @@
     ],
     "paths": {
       "@/*": ["./src/*"],
-      "@*": ["./node_modules/@samilhero/lint-config/src/*"]
+      "@*": ["./node_modules/@samilhero/design-system/src/*"]
     }
   },
   "include": [
