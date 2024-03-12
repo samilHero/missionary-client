@@ -1,8 +1,8 @@
 {
   "extends": [
-    "./eslint/index.js",
     "airbnb",
-    "airbnb/hooks"
+    "airbnb/hooks",
+    "./eslint/index.js"
   ],
   "parserOptions": {
     "requireConfigFile": false
