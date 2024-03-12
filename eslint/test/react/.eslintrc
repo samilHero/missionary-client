@@ -1,6 +1,6 @@
 {
   "root": true,
-  "extends": "../../frontend.js",
+  "extends": "../../eslint.js",
   "parserOptions": {
     "requireConfigFile": false
   }
