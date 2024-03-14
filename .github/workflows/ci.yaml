@@ -8,32 +8,48 @@ on:
 jobs:
   cache-and-install:
     runs-on: ubuntu-latest
+
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: 'pnpm'
+
       - uses: pnpm/action-setup@v3
         with:
           version: 8
-          run_install: true
 
-  check-lint:
-    needs: cache-and-install
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - run: pnpm lint
-      - run: pnpm prettier
-      - run: pnpm lint:style
+      - name: Get pnpm store directory
+        shell: bash
+        run: |
+          echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
+
+      - uses: actions/cache@v4
+        name: Setup pnpm cache
+        with:
+          path: ${{ env.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Lint
+        run: |
+          pnpm lint
+          pnpm prettier
+          pnpm lint:style
 
   build:
-    needs: check-lint
+    needs: setup-and-lint
     runs-on: ubuntu-latest
     strategy:
       matrix:
         package: [ 'design-system', 'missionary-admin', 'missionary-app' ]
     steps:
       - uses: actions/checkout@v4
-      - run: pnpm run build --filter ${{ matrix.package }}
+
+      - name: Build packages
+        run: pnpm run build --filter ${{ matrix.package }}
