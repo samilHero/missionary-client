@@ -69,3 +69,20 @@ jobs:
 
       - name: Check style-lint
         run: pnpm lint:style
+
+  jobs:
+    build:
+      runs-on: ubuntu-latest
+      strategy:
+        matrix:
+          package: [ 'design-system', 'missionary-admin', 'missionary-app' ]
+      steps:
+        - uses: actions/checkout@v4
+
+        - name: Install Node.js
+          uses: actions/setup-node@v4
+          with:
+            node-version: 20
+
+        - name: Build
+          run: pnpm run build --filter ${{ matrix.package }}
