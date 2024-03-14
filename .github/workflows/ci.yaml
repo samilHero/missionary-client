@@ -6,7 +6,7 @@ on:
       - dev
 
 jobs:
-  cache-and-install:
+  setup-and-lint:
     runs-on: ubuntu-latest
 
     steps:
