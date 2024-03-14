@@ -71,6 +71,7 @@ jobs:
         run: pnpm lint:style
 
   build:
+    needs: check-lint
     runs-on: ubuntu-latest
     strategy:
       matrix:
