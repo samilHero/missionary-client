@@ -4,6 +4,7 @@ const styles = css`
   * {
     box-sizing: border-box;
   }
+
   blockquote,
   body,
   button,
@@ -53,10 +54,10 @@ const styles = css`
     quotes: none;
   }
 
-  blockquote:after,
-  blockquote:before,
-  q:after,
-  q:before {
+  blockquote::after,
+  blockquote::before,
+  q::after,
+  q::before {
     content: '';
     content: none;
   }
@@ -84,9 +85,9 @@ const styles = css`
   }
 
   body {
-    -webkit-text-size-adjust: none;
+    text-size-adjust: none;
 
-    background: var(--baseBackground);
+    background: var(--base-background);
   }
 
   html input[type='button'],
@@ -97,14 +98,13 @@ const styles = css`
   input[type='submit'],
   input[type='tel'],
   input[type='text'] {
-    -webkit-appearance: none;
     appearance: none;
 
     border-radius: 0;
   }
 
   input[type='search']::-webkit-search-cancel-button {
-    -webkit-appearance: none;
+    appearance: none;
   }
 
   body,
