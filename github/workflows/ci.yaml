@@ -1,8 +1,5 @@
 name: CI
 
-env:
-  CSE_NPM_TOKEN: ${{ secrets.CSE_NPM_TOKEN }}
-
 on:
   push:
   pull_request:
