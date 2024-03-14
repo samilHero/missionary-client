@@ -70,7 +70,6 @@ jobs:
       - name: Check style-lint
         run: pnpm lint:style
 
-  jobs:
     build:
       runs-on: ubuntu-latest
       strategy:

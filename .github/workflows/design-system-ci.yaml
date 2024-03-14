@@ -1,0 +1,26 @@
+#name: design-system-ci
+#
+#on:
+#  pull_request:
+#    paths:
+#      - 'packages/design-system/**'
+#    branches:
+#      - dev
+#
+#jobs:
+#  build:
+#    runs-on: ubuntu-latest
+#    steps:
+#      - name: Checkout
+#        uses: actions/checkout@v4
+#
+#      - name: Install Node.js
+#        uses: actions/setup-node@v4
+#        with:
+#          node-version: 20
+#
+#      - name: Install dependencies
+#        run: pnpm install
+#
+#      - name: Build
+#        run: pnpm run build
