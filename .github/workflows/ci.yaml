@@ -30,12 +30,17 @@ jobs:
           echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
 
       - uses: actions/cache@v4
+        id: pnpm-cache
         name: Setup pnpm cache
         with:
           path: ${{ env.STORE_PATH }}
           key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
           restore-keys: |
             ${{ runner.os }}-pnpm-store-
+      - if: steps.pnpm-cache.outputs.cache-hit == 'true'
+        run: echo 'pnpm cache hit!'
+      - if: steps.pnpm-cache.outputs.cache-hit != 'true'
+        run: echo 'pnpm cache missed!'
 
       - name: Install dependencies
         run: pnpm install
@@ -66,4 +71,6 @@ jobs:
           version: 8
 
       - name: Build packages
-        run: pnpm run build --filter ${{ matrix.package }}
+        run: |
+          pnpm install
+          pnpm run build --filter ${{ matrix.package }}
