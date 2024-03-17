@@ -12,6 +12,7 @@ import { SelectTrigger } from './Trigger';
 import { SelectSearchInput } from './SelectSearchInput';
 import { SelectOptions } from './SelectOptions';
 import { SelectOption } from './SelectOption';
+import { forwardRefWithAs } from '@utils';
 
 const SelectActionsContext = createContext<{
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
@@ -135,8 +136,8 @@ const SelectRoot = ({
 };
 
 export const Select = Object.assign(SelectRoot, {
-  Trigger: SelectTrigger,
-  SearchInput: SelectSearchInput,
-  Options: SelectOptions,
-  Option: SelectOption,
+  Trigger: forwardRefWithAs(SelectTrigger),
+  SearchInput: forwardRefWithAs(SelectSearchInput),
+  Options: forwardRefWithAs(SelectOptions),
+  Option: forwardRefWithAs(SelectOption),
 });
