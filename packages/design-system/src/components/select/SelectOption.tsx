@@ -1,6 +1,7 @@
 import type { HTMLAttributes, Ref } from 'react';
 import React from 'react';
-import { useActions } from './index';
+import { useContextAction } from '@hooks';
+import { SelectActionsContext } from './index';
 
 interface SelectOptionProps extends HTMLAttributes<HTMLLIElement> {
   item: string;
@@ -9,7 +10,7 @@ export const SelectOption = (
   { item, className, children, ...props }: SelectOptionProps,
   ref: Ref<HTMLLIElement>,
 ) => {
-  const actions = useActions('Select.Option');
+  const actions = useContextAction('Select.Option', SelectActionsContext);
 
   return (
     <li

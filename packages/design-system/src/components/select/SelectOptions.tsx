@@ -1,6 +1,7 @@
 import type { HTMLProps, Ref } from 'react';
 import React from 'react';
-import { useData } from './index';
+import { SelectActionsContext } from './index';
+import { useContextData } from '@hooks';
 
 interface SelectOptionsProps extends HTMLProps<HTMLUListElement> {
   label?: string;
@@ -9,7 +10,7 @@ export const SelectOptions = (
   { children, label, className, ...props }: SelectOptionsProps,
   ref: Ref<HTMLUListElement>,
 ) => {
-  const data = useData('Select.Options');
+  const data = useContextData('Select.Options', SelectActionsContext);
 
   return (
     data.open && (

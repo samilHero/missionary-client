@@ -1,6 +1,7 @@
 import type { InputHTMLAttributes, Ref } from 'react';
 import React, { useEffect } from 'react';
-import { useData } from './index';
+import { SelectActionsContext } from './index';
+import { useContextData } from '@hooks';
 
 interface SelectSearchInputProps
   extends Omit<InputHTMLAttributes<HTMLInputElement>, 'onChange'> {
@@ -11,7 +12,7 @@ export const SelectSearchInput = (
   { value, onChange, placeholder, className, ...props }: SelectSearchInputProps,
   ref: Ref<HTMLInputElement>,
 ) => {
-  const data = useData('Select.SearchInput');
+  const data = useContextData('Select.SearchInput', SelectActionsContext);
 
   useEffect(() => {
     return () => {

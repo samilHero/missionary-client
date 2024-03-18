@@ -3,7 +3,6 @@
 import React, {
   createContext,
   useCallback,
-  useContext,
   useEffect,
   useMemo,
   useRef,
@@ -16,46 +15,17 @@ import { SelectOptions } from './SelectOptions';
 import { SelectOption } from './SelectOption';
 import { forwardRefWithAs } from '@utils';
 
-const SelectActionsContext = createContext<{
+export const SelectActionsContext = createContext<{
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
   handleSelectItem: (item: string) => void;
 } | null>(null);
 SelectActionsContext.displayName = 'SelectActionsContext';
-export const useActions = (component: string) => {
-  const context = useContext(SelectActionsContext);
-  if (context === null) {
-    const err = new Error(
-      `<${component} /> is missing a parent <Select /> component.`,
-    );
-    if (Error.captureStackTrace) {
-      Error.captureStackTrace(err, useActions);
-    }
-    throw err;
-  }
-  return context;
-};
-type _Actions = ReturnType<typeof useActions>;
 
 const SelectDataContext = createContext<{
   open: boolean;
   selectedItem: string[];
 } | null>(null);
 SelectDataContext.displayName = 'SelectDataContext';
-
-export const useData = (component: string) => {
-  const context = useContext(SelectDataContext);
-  if (context === null) {
-    const err = new Error(
-      `<${component} /> is missing a parent <Select /> component.`,
-    );
-    if (Error.captureStackTrace) {
-      Error.captureStackTrace(err, useData);
-    }
-    throw err;
-  }
-  return context;
-};
-type _Data = ReturnType<typeof useData>;
 
 export interface CommonProps {
   children?: React.ReactNode;
@@ -111,7 +81,7 @@ const SelectRoot = ({
     };
   }, [onSubmit, selectedItem, setOpen]);
 
-  const actions = useMemo<_Actions>(
+  const actions = useMemo(
     () => ({
       setOpen,
       handleSelectItem,
@@ -119,7 +89,7 @@ const SelectRoot = ({
     [setOpen, handleSelectItem],
   );
 
-  const data = useMemo<_Data>(
+  const data = useMemo(
     () => ({
       open,
       selectedItem,

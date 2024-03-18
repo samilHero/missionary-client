@@ -1,13 +1,14 @@
 import type { ButtonHTMLAttributes, Ref } from 'react';
 import React, { useCallback } from 'react';
-import { useActions } from './index';
+import { SelectActionsContext } from './index';
+import { useContextAction } from '@hooks';
 
 interface TriggerProps extends ButtonHTMLAttributes<HTMLButtonElement> {}
 export const SelectTrigger = (
   { children, ...props }: TriggerProps,
   ref: Ref<HTMLButtonElement>,
 ) => {
-  const actions = useActions('Select.Trigger');
+  const actions = useContextAction('Select.Trigger', SelectActionsContext);
 
   const handleOnClick = useCallback(() => {
     actions.setOpen((prevOpen) => !prevOpen);
