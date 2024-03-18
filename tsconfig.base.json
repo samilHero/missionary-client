@@ -23,7 +23,6 @@
       }
     ],
     "paths": {
-      "@/*": ["./src/*"],
       "@*": ["./node_modules/@samilhero/design-system/src/*"]
     }
   },
