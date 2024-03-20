@@ -1,3 +1,3 @@
-import CommonInput from './input/index';
+import Input from './input';
 
-export { CommonInput };
+export default { Input };

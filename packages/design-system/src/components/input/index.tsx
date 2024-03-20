@@ -1,5 +1,5 @@
 import React, { InputHTMLAttributes } from 'react';
-interface ICommonInput extends InputHTMLAttributes<HTMLInputElement> {
+interface IInputProps extends InputHTMLAttributes<HTMLInputElement> {
   inputType: string;
   disabled: boolean;
   value: string;
@@ -7,29 +7,27 @@ interface ICommonInput extends InputHTMLAttributes<HTMLInputElement> {
   onClick: () => void;
 }
 
-function CommonInput({
-  inputType = 'text',
-  disabled = false,
-  value,
-  onChange,
-  onClick,
-  ...rest
-}: ICommonInput): JSX.Element {
-  const handlerChangeInput = () => {};
+const Input: React.FC<IInputProps> = React.forwardRef(
+  (
+    { inputType, disabled, value, onChange, onClick, ...rest },
+    _ref,
+  ): JSX.Element => {
+    const handlerChangeInput = () => {};
 
-  return (
-    <div>
-      <input
-        type={inputType}
-        disabled={disabled}
-        autoComplete="off"
-        value={value}
-        onChange={onChange}
-        onClick={onClick}
-        {...rest}
-      />
-    </div>
-  );
-}
+    return (
+      <div>
+        <input
+          type={inputType}
+          disabled={disabled}
+          autoComplete="off"
+          value={value}
+          onChange={onChange}
+          onClick={onClick}
+          {...rest}
+        />
+      </div>
+    );
+  },
+);
 
-export default CommonInput;
+export default Input;
