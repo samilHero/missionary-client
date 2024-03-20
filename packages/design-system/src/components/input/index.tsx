@@ -1,4 +1,5 @@
-import React, { InputHTMLAttributes } from 'react';
+import React from 'react';
+import type { InputHTMLAttributes } from 'react';
 interface IInputProps extends InputHTMLAttributes<HTMLInputElement> {
   inputType: string;
   disabled: boolean;
@@ -9,11 +10,9 @@ interface IInputProps extends InputHTMLAttributes<HTMLInputElement> {
 
 const Input: React.FC<IInputProps> = React.forwardRef(
   (
-    { inputType, disabled, value, onChange, onClick, ...rest },
-    _ref,
+    { inputType = 'text', disabled, value, onChange, onClick, ...rest },
+    ref: React.Ref<HTMLInputElement>,
   ): JSX.Element => {
-    const handlerChangeInput = () => {};
-
     return (
       <div>
         <input
