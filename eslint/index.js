@@ -5,10 +5,10 @@ module.exports = {
     'plugin:import/recommended',
     'plugin:promise/recommended',
     ...[
-      './rules/base',
       './rules/prettier',
       './rules/promise',
       './rules/import',
+      './rules/base',
     ].map(require.resolve),
   ],
   env: {
