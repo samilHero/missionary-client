@@ -1,51 +1,55 @@
 'use client';
 
+import { IconInputError, IconInputReset } from '@assets/icons';
+import classnames from 'classnames';
 import React from 'react';
-import type { InputHTMLAttributes } from 'react';
-import { InputLayout, InputBox, InputError } from './InputLayout';
-import { IconInputError, IconInputReset } from '@assets/icons'; // icons 디렉토리의 index 파일에서 export한 컴포넌트를 불러옵니다.
 
-interface IInputProps extends InputHTMLAttributes<HTMLInputElement> {
-  inputType: string;
+import type { InputHTMLAttributes } from 'react';
+
+interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
+  inputType?: string;
   disabled?: boolean;
   value: string;
   error?: string;
-  onChange?: () => void;
   onClick?: () => void;
   onReset?: () => void;
+  ref?: React.Ref<HTMLInputElement>;
 }
 
-export const Input: React.FC<IInputProps> = React.forwardRef(
-  (
-    {
-      inputType = 'text',
-      disabled,
-      value,
-      error,
-      onChange,
-      onClick,
-      onReset,
-      ...rest
-    },
-    ref: React.Ref<HTMLInputElement>,
-  ): JSX.Element => {
-    return (
-      <InputLayout>
-        <InputBox>
-          <input
-            type={inputType}
-            disabled={disabled}
-            autoComplete="off"
-            value={value}
-            onChange={onChange}
-            onClick={onClick}
-            {...rest}
-          />
-          {error && <IconInputError />}
-          <IconInputReset onClick={() => onReset} />
-        </InputBox>
-        {error && <InputError>에러 메세지</InputError>}
-      </InputLayout>
-    );
-  },
-);
+export function Input({
+  inputType = 'text',
+  disabled,
+  value,
+  error,
+  onChange,
+  onClick,
+  onReset,
+  ref,
+  className,
+  ...rest
+}: InputProps) {
+  return (
+    <div className={classnames('flex flex-col', className)}>
+      <div className="flex w-80 h-5 px-4 py-[13px] rounded-lg bg-gray-02 text-black">
+        <input
+          type={inputType}
+          disabled={disabled}
+          autoComplete="off"
+          value={value}
+          onChange={onChange}
+          onClick={onClick}
+          ref={ref}
+          className="flex-1 border-0 bg-gray-02 focus:outline-none placeholder:text-gray-30 disabled:bg-gray-05 disabled:text-primary-30"
+          {...rest}
+        />
+        {error && <IconInputError className="ml-auto" />}
+        <IconInputReset
+          className="ml-auto cursor-pointer"
+          onClick={() => onReset?.()}
+        />
+      </div>
+      {error && <div className="mt-[5px] text-error-60 text-xs">{error}</div>}
+    </div>
+  );
+}
+Input.displayName = 'Input';

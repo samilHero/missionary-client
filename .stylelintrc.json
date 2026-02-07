@@ -1,0 +1,21 @@
+{
+  "extends": ["stylelint-config-standard-scss"],
+  "rules": {
+    "scss/dollar-variable-pattern": null,
+    "scss/at-mixin-pattern": null,
+    "scss/load-no-partial-leading-underscore": null,
+    "scss/at-rule-no-unknown": [
+      true,
+      {
+        "ignoreAtRules": [
+          "theme",
+          "tailwind",
+          "apply",
+          "layer",
+          "config",
+          "source"
+        ]
+      }
+    ]
+  }
+}

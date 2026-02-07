@@ -1,2 +1,7 @@
 packages:
-  - 'packages/*'
+  - packages/*
+
+ignoredBuiltDependencies:
+  - '@nestjs/core'
+  - core-js-pure
+  - sharp

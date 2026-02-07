@@ -1,42 +1,38 @@
-import { StorybookConfig } from '@storybook/nextjs';
+import { resolve } from 'path';
 
-/** @type {StorybookConfig} */
-const config: StorybookConfig = {
-  stories: ['../src/**/*.mdx', '../src/**/*.stories.@(js|jsx|mjs|ts|tsx)'],
-  addons: [
-    '@storybook/addon-onboarding',
-    '@storybook/addon-links',
-    '@storybook/addon-essentials',
-    '@chromatic-com/storybook',
-    '@storybook/addon-interactions',
-  ],
-  framework: '@storybook/nextjs',
-  docs: {
-    autodocs: 'tag',
-  },
-  webpackFinal: async (config) => {
-    if (!config.module || !config.module.rules) {
-      return config;
-    }
-    config.module.rules = [
-      ...config.module.rules.map((rule) => {
-        if (!rule || rule === '...') {
-          return rule;
-        }
+import svgr from 'vite-plugin-svgr';
 
-        if (rule.test && /svg/.test(String(rule.test))) {
-          return { ...rule, exclude: /\.svg$/i };
-        }
-        return rule;
+import type { ViteFinal } from '@storybook/builder-vite';
+import type { StorybookConfig } from '@storybook/react-vite';
+
+const viteFinal: ViteFinal = (viteConfig) => {
+  return {
+    ...viteConfig,
+    plugins: [
+      ...(viteConfig.plugins ?? []),
+      svgr({
+        svgrOptions: { exportType: 'default' },
+        include: '**/*.svg',
       }),
-      {
-        test: /\.svg$/,
-        use: ['@svgr/webpack']
-      }
-    ]
-    
-    return config;
-  }
+    ],
+    resolve: {
+      ...viteConfig.resolve,
+      alias: {
+        '@assets': resolve(__dirname, '../src/assets'),
+        '@components': resolve(__dirname, '../src/components'),
+        '@context': resolve(__dirname, '../src/context'),
+        '@hooks': resolve(__dirname, '../src/hooks'),
+        '@styles': resolve(__dirname, '../src/styles'),
+      },
+    },
+  };
+};
+
+const config: StorybookConfig = {
+  stories: ['../src/**/*.stories.@(js|jsx|mjs|ts|tsx)'],
+  addons: ['@storybook/addon-essentials'],
+  framework: '@storybook/react-vite',
+  viteFinal,
 };
 
 export default config;

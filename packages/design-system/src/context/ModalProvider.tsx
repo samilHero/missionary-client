@@ -1,11 +1,12 @@
 'use client';
 
-import type { ComponentProps, ComponentType } from 'react';
-import { useMemo, useState, type ReactNode } from 'react';
-import { ModalDispatchContext } from './ModalDispatchContext';
-import type { Modal, ModalArray } from './ModalStateContext';
-import { ModalStateContext } from './ModalStateContext';
 import { Modals } from '@components/modal/Modals';
+import { useMemo, useState, type ReactNode, type ComponentProps } from 'react';
+
+import { ModalDispatchContext } from './ModalDispatchContext';
+import { ModalStateContext } from './ModalStateContext';
+
+import type { ModalArray } from './ModalStateContext';
 
 interface ModalProviderType {
   children: ReactNode;
@@ -18,10 +19,6 @@ export const ModalProvider = ({ children }: ModalProviderType) => {
     Component: T,
     props: ComponentProps<T>,
   ) => {
-    if (openedModals.includes({ Component, props })) {
-      return;
-    }
-
     setOpenedModals((modals) => {
       const isAlreadyOpen = modals.some(
         (modal) => modal.Component === Component,
@@ -42,7 +39,7 @@ export const ModalProvider = ({ children }: ModalProviderType) => {
 
   const dispatch = useMemo(() => {
     return { openModal, closeModal };
-  }, []);
+  }, [openModal, closeModal]);
 
   return (
     <ModalStateContext.Provider value={openedModals}>

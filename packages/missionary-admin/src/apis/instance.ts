@@ -1,23 +1,38 @@
 import axios from 'axios';
 
-import type { AxiosInstance } from 'axios';
+const api = axios.create({
+  baseURL: process.env.NEXT_PUBLIC_PROXY_API_URL ?? '',
+  headers: { 'Content-Type': 'application/json' },
+  withCredentials: true,
+});
 
-const createApiInstance = (
-  apiUrl: string,
-  requestHeaders?: object,
-): AxiosInstance => {
-  let headers = {
-    'Content-Type': 'application/json-patch+json',
-  };
+api.interceptors.response.use(
+  (response) => response,
+  async (error) => {
+    const originalRequest = error.config;
 
-  if (requestHeaders) {
-    headers = { ...headers, ...requestHeaders };
-  }
-  return axios.create({
-    baseURL: apiUrl,
-    headers,
-  });
-};
+    if (error.response?.status === 401 && !originalRequest._retry) {
+      originalRequest._retry = true;
 
-// TODO: 적절한 환경변수를 사용하도록 수정
-export default createApiInstance(process.env.NEXT_PUBLIC_PROXY_API_URL ?? '');
+      try {
+        await axios.post(
+          `${process.env.NEXT_PUBLIC_PROXY_API_URL}/auth/refresh`,
+          {},
+          { withCredentials: true },
+        );
+
+        return api(originalRequest);
+      } catch {
+        if (typeof window !== 'undefined') {
+          window.location.href = '/login';
+        }
+
+        return Promise.reject(error);
+      }
+    }
+
+    return Promise.reject(error);
+  },
+);
+
+export default api;

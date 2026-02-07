@@ -1,10 +1,8 @@
 'use client';
 
-import { useContext } from 'react';
-import { ModalStateContext } from '@context/ModalStateContext';
 import { ModalDispatchContext } from '@context/ModalDispatchContext';
-
-export const modals = {};
+import { ModalStateContext } from '@context/ModalStateContext';
+import { useContext } from 'react';
 
 export const Modals = () => {
   const openedModals = useContext(ModalStateContext);

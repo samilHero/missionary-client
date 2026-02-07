@@ -1,9 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  swcMinify: true,
-  compiler: {
-    emotion: true,
-  },
+  transpilePackages: ['@samilhero/design-system'],
 };
 
 module.exports = nextConfig;

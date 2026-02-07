@@ -1,7 +1,8 @@
 'use client';
 
-import type { Context } from 'react';
 import { useContext } from 'react';
+
+import type { Context } from 'react';
 
 // 제네릭 타입 T를 사용하여, 어떤 타입의 컨텍스트든 처리할 수 있도록 합니다.
 // component 매개변수는 컴포넌트 이름을 나타내며, 오류 메시지에 사용됩니다.

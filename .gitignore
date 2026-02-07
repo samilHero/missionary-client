@@ -39,3 +39,6 @@ next-env.d.ts
 /packages/**/node_modules
 /packages/**/src/api
 dist
+
+# mcp config (contains API keys)
+.mcp.json

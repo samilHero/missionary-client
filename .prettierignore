@@ -1,2 +1,6 @@
-.editorconfig
-.gitignore
+.cache
+package.json
+pnpm-lock.yaml
+dist
+.next
+node_modules

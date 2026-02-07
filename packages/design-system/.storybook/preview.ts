@@ -1,7 +1,7 @@
 import { Preview } from '@storybook/react';
-import 'styles/_global.scss';
+import '../src/styles/tailwind.css';
+import '../src/styles/_global.scss';
 
-/** @type { import('@storybook/react').Preview } */
 const preview: Preview = {
   parameters: {
     controls: {

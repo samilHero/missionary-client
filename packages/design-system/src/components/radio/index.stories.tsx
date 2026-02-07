@@ -1,59 +1,9 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import classnames from 'classnames';
 import { useState } from 'react';
-import styled from '@emotion/styled';
+
 import { Radio } from '.';
 
-const RadioWrapper = styled.div`
-  display: flex;
-`;
-
-const RadioStyled = styled(Radio)`
-  display: flex;
-  align-items: center;
-
-  width: 200px;
-
-  cursor: pointer;
-
-  &:hover:not(.disabled) .radio-icon {
-    background-color: #f5f5f5;
-  }
-
-  &:active:not(.disabled) .radio-icon {
-    background-color: #e5e5e5;
-  }
-
-  &.disabled {
-    cursor: not-allowed;
-  }
-`;
-
-const Icon = styled.span<{ checked: boolean }>`
-  position: relative;
-  display: inline-block;
-
-  width: 16px;
-  height: 16px;
-  margin-right: 0.5em;
-  border: 1px solid #000;
-  border-radius: 50%;
-
-  ${({ checked }) =>
-    checked &&
-    `
-    &::after {
-        content: 'v';
-        font-size: 16px;
-        font-weight: bold;
-        width: 16px;
-        height: 16px;
-        text-align: center;
-        position: absolute;
-        left: 0;
-        top: 0;
-    }
-  `}
-`;
+import type { Meta, StoryObj } from '@storybook/react';
 
 const meta: Meta<typeof Radio> = {
   component: Radio,
@@ -70,17 +20,26 @@ const RadioComponent = ({
   const [checked, setChecked] = useState(false);
 
   return (
-    <RadioWrapper>
-      <RadioStyled
+    <div className="flex">
+      <Radio
         {...args}
         value="value1"
         onChange={(newChecked) => setChecked(newChecked)}
-        className={args.disabled ? 'disabled' : ''}
+        className={classnames(
+          'flex items-center w-[200px] cursor-pointer',
+          args.disabled && 'cursor-not-allowed',
+        )}
       >
-        <Icon className="radio-icon" checked={checked} />
+        <span
+          className={classnames(
+            'relative inline-block w-4 h-4 mr-2 border border-black rounded-full',
+            checked &&
+              "after:content-['v'] after:text-base after:font-bold after:w-4 after:h-4 after:text-center after:absolute after:left-0 after:top-0",
+          )}
+        />
         Radio
-      </RadioStyled>
-    </RadioWrapper>
+      </Radio>
+    </div>
   );
 };
 

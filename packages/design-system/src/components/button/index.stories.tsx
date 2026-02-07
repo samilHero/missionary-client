@@ -1,7 +1,7 @@
-import type { Meta, StoryObj } from '@storybook/react';
-import type { ButtonProps } from '.';
 import { Button } from '.';
-import { ButtonColorMap } from './ButtonLayout';
+
+import type { ButtonProps } from '.';
+import type { Meta, StoryObj } from '@storybook/react';
 
 const meta: Meta<ButtonProps> = {
   title: 'Components/Button',
@@ -14,7 +14,7 @@ const meta: Meta<ButtonProps> = {
       control: { type: 'select', options: ['sm', 'md', 'lg', 'xlg', 'xxlg'] },
     },
     color: {
-      control: { type: 'select', options: Object.keys(ButtonColorMap) },
+      control: { type: 'select', options: ['primary', 'secondary'] },
     },
     width: {
       control: { type: 'text' },

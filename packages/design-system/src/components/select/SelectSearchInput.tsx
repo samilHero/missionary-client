@@ -1,17 +1,26 @@
-import type { InputHTMLAttributes, Ref } from 'react';
-import React, { useEffect } from 'react';
-import { SelectDataContext } from './index';
 import { useContextData } from '@hooks';
+import React, { useEffect } from 'react';
 
-interface SelectSearchInputProps
-  extends Omit<InputHTMLAttributes<HTMLInputElement>, 'onChange'> {
+import { SelectDataContext } from './index';
+
+import type { InputHTMLAttributes } from 'react';
+
+export interface SelectSearchInputProps extends Omit<
+  InputHTMLAttributes<HTMLInputElement>,
+  'onChange'
+> {
   placeholder: string;
   onChange?: (value: string, e?: React.ChangeEvent<HTMLInputElement>) => void;
+  ref?: React.Ref<HTMLInputElement>;
 }
-export const SelectSearchInput = (
-  { value, onChange, placeholder, className, ...props }: SelectSearchInputProps,
-  ref: Ref<HTMLInputElement>,
-) => {
+export const SelectSearchInput = ({
+  value,
+  onChange,
+  placeholder,
+  className,
+  ref,
+  ...props
+}: SelectSearchInputProps) => {
   const data = useContextData('Select.SearchInput', SelectDataContext);
 
   useEffect(() => {

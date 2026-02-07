@@ -1,19 +1,9 @@
 'use client';
 
-// TODO: (주찬) 아직 작업 중인 컴포넌트입니다. [24-04-15]
-
-import type { HTMLProps, Ref } from 'react';
-import { useContext } from 'react';
-import React, { createContext, useMemo } from 'react';
-import { forwardRefWithAs } from '@utils';
 import { useControllableState } from '@hooks';
+import React, { useContext, createContext, useMemo } from 'react';
 
-import styled from '@emotion/styled';
 import { CheckboxGroupActionsContext } from '../checkbox-group/checkboxGroupContext';
-
-const StyledInput = styled.input`
-  display: none;
-`;
 
 export const CheckboxActionsContext = createContext<{
   onChange: (checked: boolean) => void;
@@ -25,7 +15,10 @@ export const CheckboxDataContext = createContext<{
 } | null>(null);
 CheckboxDataContext.displayName = 'CheckboxDataContext';
 
-interface CheckboxProps extends Omit<HTMLProps<HTMLInputElement>, 'onChange'> {
+interface CheckboxProps extends Omit<
+  React.HTMLProps<HTMLInputElement>,
+  'onChange'
+> {
   defaultChecked?: boolean;
   checked?: boolean;
   onChange?: (checked: boolean) => void;
@@ -36,73 +29,70 @@ interface CheckboxProps extends Omit<HTMLProps<HTMLInputElement>, 'onChange'> {
   children?: React.ReactNode;
   ref?: React.Ref<HTMLInputElement>;
 }
-export const Checkbox = forwardRefWithAs(
-  (
-    {
-      defaultChecked = false,
-      checked: controlledChecked,
-      onChange: controlledOnChange,
-      value,
-      disabled,
-      className,
-      children,
-      name,
-      ...props
-    }: CheckboxProps,
-    ref?: Ref<HTMLInputElement>,
-  ) => {
-    // useSafeContext를 사용하지 않습니다. Checkbox 단독으로 사용할 경우 groupActions는 undefined이어야합니다.
-    const groupActions = useContext(CheckboxGroupActionsContext);
 
-    let [checked, onChange] = useControllableState<boolean>(
-      controlledChecked,
-      controlledOnChange,
-      defaultChecked,
-    );
+export function Checkbox({
+  defaultChecked = false,
+  checked: controlledChecked,
+  onChange: controlledOnChange,
+  value,
+  disabled,
+  className,
+  children,
+  name,
+  ref,
+  ...props
+}: CheckboxProps) {
+  const groupActions = useContext(CheckboxGroupActionsContext);
 
-    const actions = useMemo(
-      () => ({
-        onChange,
-      }),
-      [onChange],
-    );
-    const data = useMemo(
-      () => ({
-        checked,
-      }),
-      [checked],
-    );
+  const [checked, onChange] = useControllableState<boolean>(
+    controlledChecked,
+    controlledOnChange,
+    defaultChecked,
+  );
 
-    const handleClick = () => {
-      onChange?.(!checked);
-      if (value && groupActions) {
-        groupActions.updateCheckedValue?.(value);
-      }
-    };
+  const actions = useMemo(
+    () => ({
+      onChange,
+    }),
+    [onChange],
+  );
+  const data = useMemo(
+    () => ({
+      checked,
+    }),
+    [checked],
+  );
 
-    return (
-      <CheckboxActionsContext.Provider value={actions}>
-        <CheckboxDataContext.Provider value={data}>
-          {/* TODO: Input 컴포넌트로 변경 */}
-          <StyledInput
-            readOnly
-            type="checkbox"
-            role="checkbox"
-            ref={ref}
-            checked={checked}
-            value={value}
-            disabled={disabled}
-            name={name}
-          />
-          <div
-            className={className}
-            onClick={disabled ? undefined : handleClick}
-            {...props}
-          >
-            {children}
-          </div>
-        </CheckboxDataContext.Provider>
-      </CheckboxActionsContext.Provider>
-    );
-  },
-);
+  const handleClick = () => {
+    onChange?.(!checked);
+    if (value && groupActions) {
+      groupActions.updateCheckedValue?.(value);
+    }
+  };
+
+  return (
+    <CheckboxActionsContext.Provider value={actions}>
+      <CheckboxDataContext.Provider value={data}>
+        <input
+          readOnly
+          type="checkbox"
+          role="checkbox"
+          ref={ref}
+          checked={checked}
+          value={value}
+          disabled={disabled}
+          name={name}
+          className="hidden"
+        />
+        <div
+          className={className}
+          onClick={disabled ? undefined : handleClick}
+          {...props}
+        >
+          {children}
+        </div>
+      </CheckboxDataContext.Provider>
+    </CheckboxActionsContext.Provider>
+  );
+}
+Checkbox.displayName = 'Checkbox';

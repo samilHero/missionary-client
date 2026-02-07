@@ -1,7 +1,7 @@
 'use client';
 
+import classnames from 'classnames';
 import React from 'react';
-import { TabLayout, TabList } from './TabLayout';
 
 interface TabProps {
   list: Array<{
@@ -9,17 +9,27 @@ interface TabProps {
     label: string;
   }>;
   selectedValue: string;
-  onChange: () => void;
+  onChange: (value: string) => void;
+  className?: string;
 }
 
-export const Tab = ({ list, selectedValue, onChange }: TabProps) => {
+export const Tab = ({ list, selectedValue, onChange, className }: TabProps) => {
   return (
-    <TabLayout>
+    <div className={classnames('flex', className)}>
       {list.map((category) => (
-        <TabList key={category.value} active={category.value === selectedValue}>
+        <div
+          key={category.value}
+          className={classnames(
+            'p-2.5 text-base font-bold leading-[22px] text-center cursor-pointer',
+            category.value === selectedValue
+              ? 'border-b border-primary-80 text-primary-80'
+              : 'text-primary-30',
+          )}
+          onClick={() => onChange(category.value)}
+        >
           {category.label}
-        </TabList>
+        </div>
       ))}
-    </TabLayout>
+    </div>
   );
 };

@@ -1,0 +1,60 @@
+import {
+  Injectable,
+  Logger,
+  OnModuleDestroy,
+  OnModuleInit,
+} from '@nestjs/common';
+import { PrismaPg } from '@prisma/adapter-pg';
+import { createSoftDeleteExtension } from 'prisma-extension-soft-delete';
+
+import { PrismaClient } from '../../prisma/generated/prisma';
+
+@Injectable()
+export class PrismaService
+  extends PrismaClient
+  implements OnModuleInit, OnModuleDestroy
+{
+  private readonly logger = new Logger(PrismaService.name);
+
+  constructor() {
+    const adapter = new PrismaPg({
+      connectionString: process.env.DATABASE_URL,
+    });
+
+    super({
+      adapter,
+      log:
+        process.env.NODE_ENV === 'development'
+          ? ['query', 'info', 'warn', 'error']
+          : ['warn', 'error'],
+    });
+
+    return this.$extends(
+      createSoftDeleteExtension({
+        models: {},
+        defaultConfig: {
+          field: 'deletedAt',
+          createValue: (deleted: boolean) => {
+            if (deleted) return new Date();
+            return null;
+          },
+        },
+      }),
+    ) as this;
+  }
+
+  async onModuleInit() {
+    try {
+      await this.$connect();
+      this.logger.log('Database connection established');
+    } catch (error) {
+      this.logger.error('Failed to connect to database', error);
+      throw error;
+    }
+  }
+
+  async onModuleDestroy() {
+    await this.$disconnect();
+    this.logger.log('Database connection closed');
+  }
+}

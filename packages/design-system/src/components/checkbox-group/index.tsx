@@ -2,11 +2,8 @@
 
 // TODO: (주찬) 아직 작업 중인 컴포넌트입니다. [24-05-04]
 
-import type { HTMLProps, Ref } from 'react';
-import { useCallback } from 'react';
-import React, { useMemo } from 'react';
-import { forwardRefWithAs } from '@utils';
 import { useControllableState } from '@hooks';
+import React, { useCallback, useMemo } from 'react';
 
 import { Checkbox } from '../checkbox';
 import {
@@ -14,11 +11,10 @@ import {
   CheckboxGroupDataContext,
 } from './checkboxGroupContext';
 
-interface CheckboxProps
-  extends Omit<
-    HTMLProps<HTMLDivElement>,
-    'onChange' | 'defaultValue' | 'checked' | 'defaultChecked'
-  > {
+interface CheckboxGroupProps extends Omit<
+  React.HTMLProps<HTMLDivElement>,
+  'onChange' | 'defaultValue' | 'checked' | 'defaultChecked'
+> {
   defaultCheckedValues?: string[];
   checkedValues?: string[];
   onChange?: (value: string[]) => void;
@@ -26,22 +22,21 @@ interface CheckboxProps
   disabled?: boolean;
   className?: string;
   children?: React.ReactNode;
-  ref?: React.Ref<HTMLInputElement>;
+  ref?: React.Ref<HTMLDivElement>;
 }
-const CheckboxGroupRoot = (
-  {
-    defaultCheckedValues = [],
-    checkedValues: controlledCheckedValueList,
-    onChange: controlledOnChange,
-    disabled,
-    className,
-    children,
-    name,
-    ...props
-  }: CheckboxProps,
-  ref?: Ref<HTMLInputElement>,
-) => {
-  let [checkedValues, onChange] = useControllableState<string[]>(
+
+function CheckboxGroupRoot({
+  defaultCheckedValues = [],
+  checkedValues: controlledCheckedValueList,
+  onChange: controlledOnChange,
+  disabled,
+  className,
+  children,
+  name,
+  ref,
+  ...props
+}: CheckboxGroupProps) {
+  const [checkedValues, onChange] = useControllableState<string[]>(
     controlledCheckedValueList,
     controlledOnChange,
     defaultCheckedValues,
@@ -79,7 +74,7 @@ const CheckboxGroupRoot = (
     <CheckboxGroupActionsContext.Provider value={actions}>
       <CheckboxGroupDataContext.Provider value={data}>
         <div
-          role="radiogroup"
+          role="group"
           tabIndex={0}
           className={className}
           ref={ref}
@@ -90,11 +85,8 @@ const CheckboxGroupRoot = (
       </CheckboxGroupDataContext.Provider>
     </CheckboxGroupActionsContext.Provider>
   );
-};
+}
 
-export const CheckboxGroup = Object.assign(
-  forwardRefWithAs(CheckboxGroupRoot),
-  {
-    Item: Checkbox,
-  },
-);
+export const CheckboxGroup = Object.assign(CheckboxGroupRoot, {
+  Item: Checkbox,
+});

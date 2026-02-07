@@ -1,13 +1,7 @@
 'use client';
 
-import React, { createContext, type Ref, useMemo } from 'react';
-import styled from '@emotion/styled';
 import { useControllableState } from '@hooks';
-import { forwardRefWithAs } from '@utils';
-
-const StyledInput = styled.input`
-  display: none;
-`;
+import React, { createContext, useMemo } from 'react';
 
 export const SwitchActionsContext = createContext<{
   onChange: (checked: boolean) => void;
@@ -29,69 +23,67 @@ interface SwitchProps {
   className?: string;
   children?: React.ReactNode;
   ref?: React.Ref<HTMLInputElement>;
-
   focus?: boolean;
 }
-export const Switch = forwardRefWithAs(
-  (
-    {
-      defaultChecked = false,
-      checked: controlledChecked,
-      onChange: controlledOnChange,
-      value,
-      disabled,
-      className,
-      children,
-      name,
-      ...props
-    }: SwitchProps,
-    ref?: Ref<HTMLInputElement>,
-  ) => {
-    let [checked, onChange] = useControllableState<boolean>(
-      controlledChecked,
-      controlledOnChange,
-      defaultChecked,
-    );
 
-    const actions = useMemo(
-      () => ({
-        onChange,
-      }),
-      [onChange],
-    );
-    const data = useMemo(
-      () => ({
-        checked,
-      }),
-      [checked],
-    );
+export function Switch({
+  defaultChecked = false,
+  checked: controlledChecked,
+  onChange: controlledOnChange,
+  value,
+  disabled,
+  className,
+  children,
+  name,
+  ref,
+  ...props
+}: SwitchProps) {
+  const [checked, onChange] = useControllableState<boolean>(
+    controlledChecked,
+    controlledOnChange,
+    defaultChecked,
+  );
 
-    const handleClick = () => {
-      onChange?.(!checked);
-    };
+  const actions = useMemo(
+    () => ({
+      onChange,
+    }),
+    [onChange],
+  );
+  const data = useMemo(
+    () => ({
+      checked,
+    }),
+    [checked],
+  );
 
-    return (
-      <SwitchActionsContext.Provider value={actions}>
-        <SwitchDataContext.Provider value={data}>
-          <StyledInput
-            readOnly
-            type="checkbox"
-            role="switch"
-            ref={ref}
-            checked={checked}
-            value={value}
-            disabled={disabled}
-            name={name}
-          />
-          <div
-            className={className}
-            onClick={disabled ? undefined : handleClick}
-            {...props}
-          >
-            {children}
-          </div>
-        </SwitchDataContext.Provider>
-      </SwitchActionsContext.Provider>
-    );
-  },
-);
+  const handleClick = () => {
+    onChange?.(!checked);
+  };
+
+  return (
+    <SwitchActionsContext.Provider value={actions}>
+      <SwitchDataContext.Provider value={data}>
+        <input
+          readOnly
+          type="checkbox"
+          role="switch"
+          ref={ref}
+          checked={checked}
+          value={value}
+          disabled={disabled}
+          name={name}
+          className="hidden"
+        />
+        <div
+          className={className}
+          onClick={disabled ? undefined : handleClick}
+          {...props}
+        >
+          {children}
+        </div>
+      </SwitchDataContext.Provider>
+    </SwitchActionsContext.Provider>
+  );
+}
+Switch.displayName = 'Switch';

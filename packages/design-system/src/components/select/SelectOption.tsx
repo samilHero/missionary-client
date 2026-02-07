@@ -1,15 +1,21 @@
-import type { HTMLAttributes, Ref } from 'react';
-import React from 'react';
 import { useContextAction } from '@hooks';
+import React from 'react';
+
 import { SelectActionsContext } from './index';
 
-interface SelectOptionProps extends HTMLAttributes<HTMLLIElement> {
+import type { HTMLAttributes } from 'react';
+
+export interface SelectOptionProps extends HTMLAttributes<HTMLLIElement> {
   item: string;
+  ref?: React.Ref<HTMLLIElement>;
 }
-export const SelectOption = (
-  { item, className, children, ...props }: SelectOptionProps,
-  ref: Ref<HTMLLIElement>,
-) => {
+export const SelectOption = ({
+  item,
+  className,
+  children,
+  ref,
+  ...props
+}: SelectOptionProps) => {
   const actions = useContextAction('Select.Option', SelectActionsContext);
 
   return (

@@ -3,7 +3,7 @@
 import { useEffect, useRef } from 'react';
 
 export const useLatestValue = <T,>(value: T) => {
-  let cache = useRef(value);
+  const cache = useRef(value);
 
   useEffect(() => {
     cache.current = value;

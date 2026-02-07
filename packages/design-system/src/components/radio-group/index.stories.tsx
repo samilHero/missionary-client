@@ -1,82 +1,12 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import classnames from 'classnames';
 import { useState } from 'react';
-import { RadioGroup } from '.';
-import { Text } from '../text';
-import styled from '@emotion/styled';
+
 import { Radio } from '../radio';
+import { Text } from '../text';
 
-const RadioGroupContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 3em;
-`;
+import { RadioGroup } from '.';
 
-const RadioItemsContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 1em;
-`;
-
-const RadioGroupStyled = styled(RadioGroup)`
-  > div {
-    display: flex;
-    flex-direction: column;
-    gap: 1em;
-  }
-
-  .radio-item {
-    display: flex;
-    align-items: center;
-
-    width: 200px;
-
-    cursor: pointer;
-
-    &:hover .radio-icon {
-      background-color: #f5f5f5;
-    }
-
-    &:active .radio-icon {
-      background-color: #e5e5e5;
-    }
-  }
-
-  &.disabled .radio-item {
-    cursor: not-allowed;
-
-    &:hover .radio-icon,
-    &:active .radio-icon {
-      background-color: unset;
-    }
-  }
-`;
-
-const Icon = styled.span<{ checked: boolean }>`
-  position: relative;
-  display: inline-block;
-
-  width: 16px;
-  height: 16px;
-  margin-right: 0.5em;
-  border: 1px solid #000;
-  border-radius: 50%;
-
-  ${({ checked }) =>
-    checked &&
-    `
-    &::after {
-        content: 'v';
-        font-size: 16px;
-        font-weight: bold;
-        width: 16px;
-        height: 16px;
-        text-align: center;
-        position: absolute;
-        left: 0;
-        top: 0;
-    }
-  `}
-`;
+import type { Meta, StoryObj } from '@storybook/react';
 
 const dataList = ['짜장면', '짬뽕', '탕수육'];
 
@@ -95,26 +25,36 @@ const RadioGroupComponent = ({
   const [checked, setChecked] = useState<string>(dataList[1]);
 
   return (
-    <RadioGroupContainer>
-      <RadioItemsContainer>
+    <div className="flex flex-col gap-12">
+      <div className="flex flex-col gap-4">
         <Text typo="h2">제어 컴포넌트</Text>
-        <RadioGroupStyled
+        <RadioGroup
           {...args}
           value={checked}
           onChange={(newChecked) => setChecked(newChecked)}
-          className={args.disabled ? 'disabled' : ''}
+          className={classnames(args.disabled && 'cursor-not-allowed')}
         >
-          <div>
+          <div className="flex flex-col gap-4">
             {dataList.map((data) => (
-              <Radio key={data} value={data} className="radio-item">
-                <Icon checked={checked === data} className="radio-icon" />
+              <Radio
+                key={data}
+                value={data}
+                className="flex items-center w-[200px] cursor-pointer"
+              >
+                <span
+                  className={classnames(
+                    'relative inline-block w-4 h-4 mr-2 border border-black rounded-full',
+                    checked === data &&
+                      "after:content-['v'] after:text-base after:font-bold after:w-4 after:h-4 after:text-center after:absolute after:left-0 after:top-0",
+                  )}
+                />
                 {data}
               </Radio>
             ))}
           </div>
-        </RadioGroupStyled>
-      </RadioItemsContainer>
-    </RadioGroupContainer>
+        </RadioGroup>
+      </div>
+    </div>
   );
 };
 

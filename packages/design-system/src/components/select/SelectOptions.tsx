@@ -1,15 +1,21 @@
-import type { HTMLProps, Ref } from 'react';
-import React from 'react';
-import { SelectDataContext } from './index';
 import { useContextData } from '@hooks';
+import React from 'react';
 
-interface SelectOptionsProps extends HTMLProps<HTMLUListElement> {
+import { SelectDataContext } from './index';
+
+import type { HTMLProps } from 'react';
+
+export interface SelectOptionsProps extends HTMLProps<HTMLUListElement> {
   label?: string;
+  ref?: React.Ref<HTMLUListElement>;
 }
-export const SelectOptions = (
-  { children, label, className, ...props }: SelectOptionsProps,
-  ref: Ref<HTMLUListElement>,
-) => {
+export const SelectOptions = ({
+  children,
+  label,
+  className,
+  ref,
+  ...props
+}: SelectOptionsProps) => {
   const data = useContextData('Select.Options', SelectDataContext);
 
   return (

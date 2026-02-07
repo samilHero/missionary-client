@@ -2,22 +2,18 @@
 
 // TODO: (주찬) 아직 작업 중인 컴포넌트입니다. [24-05-15]
 
-import type { HTMLProps, Ref } from 'react';
-import { useCallback } from 'react';
-import React, { useMemo } from 'react';
-import { forwardRefWithAs } from '@utils';
 import { useControllableState } from '@hooks';
+import React, { useCallback, useMemo } from 'react';
 
 import {
   RadioGroupActionsContext,
   RadioGroupDataContext,
 } from './radioGroupContext';
 
-interface RadioGroupProps
-  extends Omit<
-    HTMLProps<HTMLDivElement>,
-    'onChange' | 'defaultValue' | 'checked' | 'defaultChecked' | 'value'
-  > {
+interface RadioGroupProps extends Omit<
+  React.HTMLProps<HTMLDivElement>,
+  'onChange' | 'defaultValue' | 'checked' | 'defaultChecked' | 'value'
+> {
   defaultCheckedValue?: string;
   value?: string;
   onChange?: (value: string) => void;
@@ -25,22 +21,21 @@ interface RadioGroupProps
   disabled?: boolean;
   className?: string;
   children?: React.ReactNode;
-  ref?: React.Ref<HTMLInputElement>;
+  ref?: React.Ref<HTMLDivElement>;
 }
-const RadioGroupRoot = (
-  {
-    defaultCheckedValue,
-    value: controlledValue,
-    onChange: controlledOnChange,
-    disabled,
-    className,
-    children,
-    name,
-    ...props
-  }: RadioGroupProps,
-  ref?: Ref<HTMLInputElement>,
-) => {
-  let [value, onChange] = useControllableState<string>(
+
+export function RadioGroup({
+  defaultCheckedValue,
+  value: controlledValue,
+  onChange: controlledOnChange,
+  disabled,
+  className,
+  children,
+  name,
+  ref,
+  ...props
+}: RadioGroupProps) {
+  const [value, onChange] = useControllableState<string>(
     controlledValue,
     controlledOnChange,
     defaultCheckedValue,
@@ -84,6 +79,5 @@ const RadioGroupRoot = (
       </RadioGroupDataContext.Provider>
     </RadioGroupActionsContext.Provider>
   );
-};
-
-export const RadioGroup = forwardRefWithAs(RadioGroupRoot);
+}
+RadioGroup.displayName = 'RadioGroup';

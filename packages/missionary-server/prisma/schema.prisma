@@ -1,0 +1,504 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "./generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ============================================
+// ENUMS
+// ============================================
+
+enum AuthProvider {
+  LOCAL
+  GOOGLE
+  KAKAO
+}
+
+enum UserRole {
+  USER
+  ADMIN
+  STAFF
+}
+
+enum MissionaryRegionType {
+  DOMESTIC
+  ABROAD
+}
+
+enum MissionaryBoardType {
+  NOTICE
+  BUS
+  ACCOMMODATION
+  FAQ
+  SCHEDULE
+}
+
+enum MissionaryStaffRole {
+  LEADER
+  MEMBER
+}
+
+enum MissionStatus {
+  RECRUITING
+  IN_PROGRESS
+  COMPLETED
+}
+
+enum TermsType {
+  USING_OF_SERVICE
+  PROCESSING_POLICY_OF_PRIVATE_INFO
+  USING_OF_PRIVATE_INFO
+  OFFERING_PRIVATE_INFO_TO_THIRD_PARTY
+}
+
+// ============================================
+// MODELS - USER & AUTH
+// ============================================
+
+model User {
+  id              String        @id @default(uuid())
+  email           String?       @unique
+  name            String?
+  password        String?       // Hashed password for LOCAL auth or ADMIN
+  provider        AuthProvider? @default(LOCAL)
+  providerId      String?       @map("provider_id")
+  role            UserRole      @default(USER)
+
+  // PII fields (from Spring User entity)
+  loginId         String?       @map("login_id")
+  identityNumber  String?       @map("identity_number") // Will be AES-encrypted in service layer
+  phoneNumber     String?       @map("phone_number")
+  birthDate       DateTime?     @map("birth_date")
+  gender          String?
+  isBaptized      Boolean       @default(false) @map("is_baptized")
+  baptizedAt      DateTime?     @map("baptized_at")
+
+  // Audit fields
+  createdAt       DateTime      @default(now()) @map("created_at")
+  updatedAt       DateTime      @updatedAt @map("updated_at")
+  createdBy       String?       @map("created_by")
+  updatedBy       String?       @map("updated_by")
+  version         Int           @default(0)
+
+  // Soft delete
+  deletedAt       DateTime?     @map("deleted_at")
+
+  // Relations
+  createdMissionaries  Missionary[]          @relation("MissionaryCreator")
+  missionaryStaff      MissionaryStaff[]
+  participations       Participation[]
+  teamMembers          TeamMember[]
+  userTermsAgreements  UserTermsAgreement[]
+
+  @@unique([provider, providerId])
+  @@map("user")
+}
+
+// ============================================
+// MODELS - MISSIONARY DOMAIN
+// ============================================
+
+model MissionaryRegion {
+  id        String                @id @default(uuid())
+  name      String
+  type      MissionaryRegionType
+
+  // Audit fields
+  createdAt DateTime              @default(now()) @map("created_at")
+  updatedAt DateTime              @updatedAt @map("updated_at")
+  createdBy String?               @map("created_by")
+  updatedBy String?               @map("updated_by")
+  version   Int                   @default(0)
+
+  // Soft delete
+  deletedAt DateTime?             @map("deleted_at")
+
+  // Relations
+  missionaries Missionary[]
+
+  @@map("missionary_region")
+}
+
+model Missionary {
+  id        String   @id @default(uuid())
+  name      String
+
+  // Period embedded object (flattened)
+  startDate DateTime @map("start_date")
+  endDate   DateTime @map("end_date")
+
+  // Pastor embedded object (flattened)
+  pastorName  String? @map("pastor_name")
+  pastorPhone String? @map("pastor_phone")
+
+  // MissionaryDetail embedded object (flattened)
+  participationStartDate       DateTime @map("participation_start_date")
+  participationEndDate         DateTime @map("participation_end_date")
+  price                        Int?
+  description                  String?  @db.Text
+  maximumParticipantCount      Int?     @map("maximum_participant_count")
+  currentParticipantCount      Int      @default(0) @map("current_participant_count")
+
+  // BankAccount embedded object (flattened)
+  bankName           String? @map("bank_name")
+  bankAccountHolder  String? @map("bank_account_holder")
+  bankAccountNumber  String? @map("bank_account_number")
+
+  // Status
+  status MissionStatus @default(RECRUITING)
+
+  // Foreign keys
+  regionId   String  @map("region_id")
+  createdById String @map("created_by_id")
+
+  // Audit fields
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  createdBy String?  @map("created_by")
+  updatedBy String?  @map("updated_by")
+  version   Int      @default(0)
+
+  // Soft delete
+  deletedAt DateTime? @map("deleted_at")
+
+  // Relations
+  region          MissionaryRegion      @relation(fields: [regionId], references: [id])
+  creator         User                  @relation("MissionaryCreator", fields: [createdById], references: [id])
+  posters         MissionaryPoster[]
+  staff           MissionaryStaff[]
+  churches        MissionaryChurch[]
+  boards          MissionaryBoard[]
+  participations  Participation[]
+  teams           Team[]
+
+  @@map("missionary")
+}
+
+model MissionaryPoster {
+  id   String @id @default(uuid())
+  name String
+  path String
+
+  // Foreign keys
+  missionaryId String @map("missionary_id")
+
+  // Audit fields
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  createdBy String?  @map("created_by")
+  updatedBy String?  @map("updated_by")
+  version   Int      @default(0)
+
+  // Soft delete
+  deletedAt DateTime? @map("deleted_at")
+
+  // Relations
+  missionary Missionary @relation(fields: [missionaryId], references: [id], onDelete: Cascade)
+
+  @@map("missionary_poster")
+}
+
+model MissionaryStaff {
+  id     String              @id @default(uuid())
+  role   MissionaryStaffRole
+
+  // Foreign keys
+  missionaryId String @map("missionary_id")
+  userId       String @map("user_id")
+
+  // Audit fields
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  createdBy String?  @map("created_by")
+  updatedBy String?  @map("updated_by")
+  version   Int      @default(0)
+
+  // Soft delete
+  deletedAt DateTime? @map("deleted_at")
+
+  // Relations
+  missionary Missionary @relation(fields: [missionaryId], references: [id])
+  user       User       @relation(fields: [userId], references: [id])
+
+  @@unique([missionaryId, userId])
+  @@map("missionary_staff")
+}
+
+model MissionaryChurch {
+  id   String @id @default(uuid())
+  name String
+
+  visitPurpose String? @map("visit_purpose")
+
+  // Pastor embedded object (flattened)
+  pastorName  String? @map("pastor_name")
+  pastorPhone String? @map("pastor_phone")
+
+  // Address embedded object (flattened)
+  addressBasic  String? @map("address_basic")
+  addressDetail String? @map("address_detail")
+
+  // Foreign keys
+  missionaryId String @map("missionary_id")
+
+  // Audit fields
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  createdBy String?  @map("created_by")
+  updatedBy String?  @map("updated_by")
+  version   Int      @default(0)
+
+  // Soft delete
+  deletedAt DateTime? @map("deleted_at")
+
+  // Relations
+  missionary Missionary @relation(fields: [missionaryId], references: [id])
+
+  @@map("missionary_church")
+}
+
+model MissionaryBoard {
+  id      String              @id @default(uuid())
+  type    MissionaryBoardType
+  title   String
+  content String              @db.Text
+
+  // Foreign keys
+  missionaryId String @map("missionary_id")
+
+  // Audit fields
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  createdBy String?  @map("created_by")
+  updatedBy String?  @map("updated_by")
+  version   Int      @default(0)
+
+  // Soft delete
+  deletedAt DateTime? @map("deleted_at")
+
+  // Relations
+  missionary Missionary            @relation(fields: [missionaryId], references: [id])
+  files      MissionaryBoardFile[]
+
+  @@map("missionary_board")
+}
+
+model MissionaryBoardFile {
+  id   String @id @default(uuid())
+  name String
+  path String
+
+  // Foreign keys
+  boardId String @map("missionary_board_id")
+
+  // Audit fields
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  createdBy String?  @map("created_by")
+  updatedBy String?  @map("updated_by")
+  version   Int      @default(0)
+
+  // Soft delete
+  deletedAt DateTime? @map("deleted_at")
+
+  // Relations
+  board MissionaryBoard @relation(fields: [boardId], references: [id], onDelete: Cascade)
+
+  @@map("missionary_board_file")
+}
+
+model Participation {
+  id                    String   @id @default(uuid())
+  name                  String
+  birthDate             String   @map("birth_date")
+  applyFee              Int?     @map("apply_fee")
+  isPaid                Boolean  @default(false) @map("is_paid")
+  identificationNumber  String?  @map("identification_number") // Will be AES-encrypted in service layer
+  isOwnCar              Boolean  @default(false) @map("is_own_car")
+
+  // Foreign keys
+  missionaryId String  @map("missionary_id")
+  userId       String  @map("user_id")
+  memberId     String? @map("member_id") // Legacy field from Spring
+  teamId       String? @map("team_id")
+
+  // Audit fields
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  createdBy String?  @map("created_by")
+  updatedBy String?  @map("updated_by")
+  version   Int      @default(0)
+
+  // Soft delete
+  deletedAt DateTime? @map("deleted_at")
+
+  // Relations
+  missionary Missionary @relation(fields: [missionaryId], references: [id])
+  user       User       @relation(fields: [userId], references: [id])
+  team       Team?      @relation(fields: [teamId], references: [id])
+
+  @@map("participation")
+}
+
+model Team {
+  id             String @id @default(uuid())
+  teamName       String @map("team_name")
+  leaderUserId   String @map("leader_user_id")
+  leaderUserName String @map("leader_user_name")
+
+  // Foreign keys
+  missionaryId String  @map("missionary_id")
+  churchId     String? @map("church_id")
+
+  // Audit fields
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  createdBy String?  @map("created_by")
+  updatedBy String?  @map("updated_by")
+  version   Int      @default(0)
+
+  // Soft delete
+  deletedAt DateTime? @map("deleted_at")
+
+  // Relations
+  missionary      Missionary      @relation(fields: [missionaryId], references: [id])
+  church          Church?         @relation(fields: [churchId], references: [id])
+  teamMembers     TeamMember[]
+  participations  Participation[]
+
+  @@map("team")
+}
+
+model TeamMember {
+  id String @id @default(uuid())
+
+  // Foreign keys
+  teamId String @map("team_id")
+  userId String @map("user_id")
+
+  // Audit fields
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  createdBy String?  @map("created_by")
+  updatedBy String?  @map("updated_by")
+  version   Int      @default(0)
+
+  // Soft delete
+  deletedAt DateTime? @map("deleted_at")
+
+  // Relations
+  team Team @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id])
+
+  @@map("team_member")
+}
+
+// ============================================
+// MODELS - CHURCH DOMAIN
+// ============================================
+
+model Church {
+  id   String @id @default(uuid())
+  name String
+
+  // Pastor embedded object (flattened)
+  pastorName  String? @map("pastor_name")
+  pastorPhone String? @map("pastor_phone")
+
+  // Address embedded object (flattened)
+  addressBasic  String? @map("address_basic")
+  addressDetail String? @map("address_detail")
+
+  // Audit fields
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  createdBy String?  @map("created_by")
+  updatedBy String?  @map("updated_by")
+  version   Int      @default(0)
+
+  // Soft delete
+  deletedAt DateTime? @map("deleted_at")
+
+  // Relations
+  teams Team[]
+
+  @@map("church")
+}
+
+// ============================================
+// MODELS - TERMS DOMAIN
+// ============================================
+
+model Terms {
+  id              String    @id @default(uuid()) @map("terms_id")
+  termsType       TermsType @map("terms_type")
+  termsUrl        String?   @map("terms_url")
+  termsTitle      String    @map("terms_title")
+  termsDescription String?  @map("terms_description") @db.Text
+  isUsed          Boolean   @default(true) @map("is_used")
+  isEssential     Boolean   @default(false) @map("is_essential")
+  seq             Int?      @default(autoincrement())
+
+  // Audit fields
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  createdBy String?  @map("created_by")
+  updatedBy String?  @map("updated_by")
+  version   Int      @default(0)
+
+  // Soft delete
+  deletedAt DateTime? @map("deleted_at")
+
+  // Relations
+  userAgreements UserTermsAgreement[]
+
+  @@map("terms")
+}
+
+model TermsContent {
+  id             String    @id @default(uuid()) @map("terms_content_id")
+  termsType      TermsType @map("terms_type")
+  termsTitle     String    @map("terms_title")
+  termsContents  String    @map("terms_contents") @db.Text
+  termsApplyAt   DateTime  @map("terms_apply_at")
+
+  // Audit fields
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  createdBy String?  @map("created_by")
+  updatedBy String?  @map("updated_by")
+  version   Int      @default(0)
+
+  // Soft delete
+  deletedAt DateTime? @map("deleted_at")
+
+  @@map("terms_content")
+}
+
+model UserTermsAgreement {
+  id        String  @id @default(uuid()) @map("user_terms_agreement_id")
+  isAgreed  Boolean @default(false) @map("is_agreed")
+
+  // Foreign keys
+  userId  String @map("user_id")
+  termsId String @map("terms_id")
+
+  // Audit fields
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  createdBy String?  @map("created_by")
+  updatedBy String?  @map("updated_by")
+  version   Int      @default(0)
+
+  // Soft delete
+  deletedAt DateTime? @map("deleted_at")
+
+  // Relations
+  user  User  @relation(fields: [userId], references: [id])
+  terms Terms @relation(fields: [termsId], references: [id])
+
+  @@map("user_terms_agreement")
+}

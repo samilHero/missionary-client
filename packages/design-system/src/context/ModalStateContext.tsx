@@ -1,7 +1,8 @@
 'use client';
 
-import type { ComponentProps, ElementType } from 'react';
 import { createContext } from 'react';
+
+import type { ComponentProps, ElementType } from 'react';
 
 export interface Modal<T extends React.ElementType> {
   Component: T;

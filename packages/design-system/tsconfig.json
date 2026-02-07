@@ -1,44 +1,33 @@
 {
   "compilerOptions": {
     "target": "ESNext",
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "esnext"
-    ],
+    "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
     "skipLibCheck": true,
     "strict": true,
     "noEmit": true,
     "esModuleInterop": true,
     "module": "esnext",
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
+    "allowArbitraryExtensions": true,
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "jsx": "preserve",
-    "incremental": true,
-    "plugins": [
-      {
-        "name": "next"
-      }
-    ],
+    "jsx": "react-jsx",
     "baseUrl": "./src",
     "paths": {
-      "@*": [
-        "./*"
-      ]
-    },
-    "types": [
-      "@emotion/react/types/css-prop"
-    ]
+      "@assets/*": ["./assets/*"],
+      "@components/*": ["./components/*"],
+      "@context/*": ["./context/*"],
+      "@hooks": ["./hooks/index.tsx"],
+      "@hooks/*": ["./hooks/*"],
+      "@styles/*": ["./styles/*"]
+    }
   },
   "include": [
-    "next-env.d.ts",
-    "**/*.ts",
-    "**/*.tsx",
-    ".next/types/**/*.ts"
+    "src/**/*.ts",
+    "src/**/*.tsx",
+    "vite.config.ts",
+    ".storybook/**/*.ts"
   ],
-  "exclude": [
-    "node_modules"
-  ]
+  "exclude": ["node_modules"]
 }

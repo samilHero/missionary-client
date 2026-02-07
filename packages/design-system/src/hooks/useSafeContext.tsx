@@ -1,7 +1,8 @@
 'use client';
 
-import type { Context } from 'react';
 import { useContext } from 'react';
+
+import type { Context } from 'react';
 
 export const useSafeContext = <T,>(context: Context<T>): NonNullable<T> => {
   const value = useContext(context);
